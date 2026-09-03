@@ -142,3 +142,51 @@ html.hero-origami-js .hero-origami.is-open .hero-origami-flap-bottom {
 		transition: none;
 	}
 }
+
+/* Section 10 "Get Valuable Insights": the exact same three flap SVGs as
+   .hero-origami above, to match designs/Section 10 - get valuable
+   insights.png -- but that design is .hero-origami's photo/text
+   composition mirrored left-right (photo on the left, text on the
+   right, instead of the hero's photo-right/text-left), so every rule
+   below is .hero-origami's resting (no-JS) state with left/right swapped
+   and `scaleX(-1)` added to flip each flap's artwork to face the other
+   way. Same percentages, same assets, same box requirements (add the
+   `insights-origami` class via Advanced -> CSS ID & Classes to the
+   row/image module already absolute-positioned over this section's
+   photo) -- only the direction is mirrored. */
+
+.insights-origami::before,
+.insights-origami::after {
+	content: '';
+	position: absolute;
+	z-index: 5;
+	pointer-events: none;
+}
+
+.insights-origami::before {
+	right: 0;
+	top: 0;
+	width: 69.1%;
+	height: 100%;
+	transform: scaleX(-1);
+	background-repeat: no-repeat, no-repeat;
+	background-position: left, right;
+	background-size: 40.8% 100%, 100%;
+	background-image: linear-gradient(#fdfdfd, #fdfdfd), url('images/flap-left.svg');
+}
+
+.insights-origami::after {
+	inset: 0;
+	transform: scaleX(-1);
+	background-repeat: no-repeat, no-repeat;
+	background-image: url('images/flap-top.svg'), url('images/flap-bottom.svg');
+	background-position: top right, bottom right;
+	background-size: 20.9% auto, 23% auto;
+}
+
+@media (max-width: 980px) {
+	.insights-origami::before,
+	.insights-origami::after {
+		display: none;
+	}
+}
