@@ -1,0 +1,38 @@
+/* Scroll-triggered wipe reveal for images. Add `img-reveal-ltr`
+   (reveals left-to-right) or `img-reveal-rtl` (reveals right-to-left)
+   to a Divi image module/column (Advanced tab -> CSS ID & Classes) to
+   enable. Pairs with image-reveal.js, which toggles `is-revealed` via
+   IntersectionObserver and adds `img-reveal-js` to <html> once
+   running -- images render normally if JS is disabled or fails. */
+
+.img-reveal-ltr img,
+.img-reveal-rtl img {
+	clip-path: inset(0 0 0 0);
+}
+
+html.img-reveal-js .img-reveal-ltr img {
+	clip-path: inset(0 100% 0 0);
+	transition: clip-path 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+	will-change: clip-path;
+}
+
+html.img-reveal-js .img-reveal-rtl img {
+	clip-path: inset(0 0 0 100%);
+	transition: clip-path 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+	will-change: clip-path;
+}
+
+html.img-reveal-js .img-reveal-ltr.is-revealed img,
+html.img-reveal-js .img-reveal-rtl.is-revealed img {
+	clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.img-reveal-js .img-reveal-ltr img,
+	html.img-reveal-js .img-reveal-rtl img,
+	html.img-reveal-js .img-reveal-ltr.is-revealed img,
+	html.img-reveal-js .img-reveal-rtl.is-revealed img {
+		clip-path: inset(0 0 0 0);
+		transition: none;
+	}
+}

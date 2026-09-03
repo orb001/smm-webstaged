@@ -1,0 +1,144 @@
+/* Section 1 hero: three white "paper flap" SVGs layered over the hero
+   photo to match designs/Section 1 - Hero v1 - origami.png. Add the
+   `hero-origami` class (Advanced -> CSS ID & Classes) to the row that's
+   already absolute-positioned to cover the hero section (the row
+   wrapping the hero image) -- these overlays are sized as percentages
+   of that same box, so they only land correctly on that element.
+
+   Percentages below were measured directly off the design mockup
+   (1920 x 847 canvas): flap-left sits flush with the photo's left
+   edge at 40.8% in, spanning full height; flap-top and flap-bottom
+   are flush with the top-right and bottom-right corners.
+
+   This layout is the animation's resting/open state. hero-origami.js
+   injects a `.hero-origami-flap-bottom` child (splitting flap-bottom
+   out of the ::after it used to share with flap-top, so all three
+   flaps can move independently) and adds `hero-origami-js` to <html>,
+   which arms the closed->open transition below -- the flaps start
+   pulled together (closed, hiding the photo) and animate out to this
+   resting layout shortly after load. Without JS, only the plain
+   resting layout renders, exactly as before. */
+
+.hero-origami::before,
+.hero-origami::after {
+	content: '';
+	position: absolute;
+	z-index: 5;
+	pointer-events: none;
+}
+
+.hero-origami::before {
+	left: 0;
+	top: 0;
+	width: 69.1%;
+	height: 100%;
+	background-repeat: no-repeat, no-repeat;
+	background-position: left, right;
+	/* first layer: solid #fdfdfd backing (a flat gradient, since background-color
+	   isn't layerable) sized to ONLY the 40.8% strip left of the flap's own
+	   bounding box -- it must stop there so it doesn't paint over the SVG's
+	   transparent notch, which is what lets the photo peek through */
+	background-size: 40.8% 100%, 100%;
+	background-image: linear-gradient(#fdfdfd, #fdfdfd), url('images/flap-left.svg');
+}
+
+.hero-origami::after {
+	inset: 0;
+	background-repeat: no-repeat, no-repeat;
+	background-image: url('images/flap-top.svg'), url('images/flap-bottom.svg');
+	background-position: top right, bottom right;
+	background-size: 20.9% auto, 23% auto;
+}
+
+/* Once JS has split flap-bottom into its own element, shrink ::after
+   from the full-box/background-position trick down to a box sized to
+   just the flap-top wedge itself (top right, width % + aspect-ratio,
+   same pattern paper-reveal.css uses for its corner pieces). This
+   matters for the animation below: a transform's percentage units are
+   relative to the element's OWN box, so translating a box that's
+   still sized to the full hero would move the wedge by a huge
+   fraction of the whole photo instead of a subtle nudge. */
+html.hero-origami-js .hero-origami::after {
+	inset: auto;
+	top: 0;
+	right: 0;
+	width: 20.9%;
+	height: auto;
+	aspect-ratio: 402 / 190;
+	background-image: url('images/flap-top.svg');
+	background-position: 0 0;
+	background-size: contain;
+}
+
+.hero-origami-flap-bottom {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: 5;
+	pointer-events: none;
+	width: 23%;
+	aspect-ratio: 441 / 148;
+	background-repeat: no-repeat;
+	background-image: url('images/flap-bottom.svg');
+	background-position: 0 0;
+	background-size: contain;
+}
+
+@media (max-width: 980px) {
+	.hero-origami::before,
+	.hero-origami::after,
+	.hero-origami-flap-bottom {
+		display: none;
+	}
+}
+
+/* Opening animation: each flap starts translated toward the center
+   (closed, fully hiding the photo behind them) and springs out to
+   translate(0, 0) -- its plain resting position above -- once
+   hero-origami.js adds `is-open`. Percentages are relative to each
+   flap's own box, so flap-left (the biggest piece) needs a smaller
+   percentage to travel the same visual distance as the two corner
+   wedges. Tune these three transforms by eye against the design. */
+
+.hero-origami {
+	--flap-left-closed: translate(32%, 0);
+	--flap-top-closed: translate(-45%, 55%);
+	--flap-bottom-closed: translate(-45%, -55%);
+}
+
+html.hero-origami-js .hero-origami::before,
+html.hero-origami-js .hero-origami::after,
+html.hero-origami-js .hero-origami-flap-bottom {
+	transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: transform;
+}
+
+html.hero-origami-js .hero-origami::before {
+	transform: var(--flap-left-closed);
+}
+
+html.hero-origami-js .hero-origami::after {
+	transform: var(--flap-top-closed);
+}
+
+html.hero-origami-js .hero-origami-flap-bottom {
+	transform: var(--flap-bottom-closed);
+}
+
+html.hero-origami-js .hero-origami.is-open::before,
+html.hero-origami-js .hero-origami.is-open::after,
+html.hero-origami-js .hero-origami.is-open .hero-origami-flap-bottom {
+	transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.hero-origami-js .hero-origami::before,
+	html.hero-origami-js .hero-origami::after,
+	html.hero-origami-js .hero-origami-flap-bottom,
+	html.hero-origami-js .hero-origami.is-open::before,
+	html.hero-origami-js .hero-origami.is-open::after,
+	html.hero-origami-js .hero-origami.is-open .hero-origami-flap-bottom {
+		transform: none;
+		transition: none;
+	}
+}

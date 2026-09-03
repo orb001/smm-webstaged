@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 402 190" width="402" height="190">
+  <defs>
+    <filter id="paperShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="10" dy="14" stdDeviation="12" flood-color="#000000" flood-opacity="0.28"/>
+      <feDropShadow dx="3" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <polygon points="0,0 277,190 402,122 402,0" fill="#fdfdfd" filter="url(#paperShadow)"/>
+</svg>

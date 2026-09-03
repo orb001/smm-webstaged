@@ -1,0 +1,155 @@
+/* Scroll-triggered paper reveal. Add the `paper-reveal` class to any
+   Divi section wrapper (Advanced tab -> CSS ID & Classes) to enable.
+   Layers two paper-cutout SVGs on top of the section -- one over the
+   top-right corner, one over the bottom-left corner (matching the
+   Section 6 design, where the bottom-left piece overlaps the row
+   image) -- each with a baked-in drop shadow. Pairs with
+   paper-reveal.js, which toggles `is-revealed` via IntersectionObserver
+   and adds `paper-reveal-js` to <html> once running -- the pieces
+   render in their final, visible position if JS is disabled or fails. */
+
+.paper-reveal {
+	position: relative;
+}
+
+.paper-reveal::before,
+.paper-reveal::after {
+	content: '';
+	position: absolute;
+	z-index: 20;
+	pointer-events: none;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.paper-reveal::before {
+	top: 0;
+	right: 0;
+	width: 34%;
+	max-width: 657px;
+	aspect-ratio: 657 / 344;
+	background-image: url('images/paper-corner-top-right.svg');
+	background-position: top right;
+}
+
+.paper-reveal::after {
+	bottom: 0;
+	left: 0;
+	width: 33%;
+	max-width: 628px;
+	aspect-ratio: 628 / 210;
+	background-image: url('images/paper-corner-bottom-left.svg');
+	background-position: bottom left;
+}
+
+html.paper-reveal-js .paper-reveal::before,
+html.paper-reveal-js .paper-reveal::after {
+	opacity: 0;
+	transition: opacity 0.35s ease-out, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: opacity, transform;
+}
+
+html.paper-reveal-js .paper-reveal::before {
+	transform: translate(70px, -70px);
+}
+
+html.paper-reveal-js .paper-reveal::after {
+	transform: translate(-70px, 70px);
+}
+
+html.paper-reveal-js .paper-reveal.is-revealed::before,
+html.paper-reveal-js .paper-reveal.is-revealed::after {
+	opacity: 1;
+	transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.paper-reveal-js .paper-reveal::before,
+	html.paper-reveal-js .paper-reveal::after,
+	html.paper-reveal-js .paper-reveal.is-revealed::before,
+	html.paper-reveal-js .paper-reveal.is-revealed::after {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}
+
+/* Variant: both paper pieces stacked over the top-right corner only
+   (e.g. Section 8, over the row image). Add `paper-reveal-right`
+   instead of `paper-reveal` to the section wrapper. The larger piece
+   sits above the smaller one, which is nudged down so its edge peeks
+   out just past the larger piece's edge -- the stepped-edge look from
+   the design. */
+
+.paper-reveal-right {
+	position: relative;
+}
+
+.paper-reveal-right::before,
+.paper-reveal-right::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	pointer-events: none;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.paper-reveal-right::before {
+	top: 0;
+	z-index: 21;
+	width: 42.6%;
+	max-width: 818px;
+	aspect-ratio: 818 / 353;
+	background-image: url('images/paper-corner-right-1.svg');
+	background-position: top right;
+}
+
+.paper-reveal-right::after {
+	bottom: 0;
+	right: -1vw;
+	z-index: 20;
+	height: 100%;
+	aspect-ratio: 291 / 440;
+	background-image: url('images/paper-corner-right-2.svg');
+	background-position: bottom right;
+}
+
+@media (max-width: 1249px) {
+	.paper-reveal-right::after {
+		display: none;
+	}
+}
+
+html.paper-reveal-js .paper-reveal-right::before,
+html.paper-reveal-js .paper-reveal-right::after {
+	opacity: 0;
+	will-change: opacity, transform;
+}
+
+html.paper-reveal-js .paper-reveal-right::before {
+	transform: translate(70px, -70px);
+	transition: opacity 0.35s ease-out, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.paper-reveal-js .paper-reveal-right::after {
+	transform: translate(70px, 0);
+	transition: opacity 0.35s ease-out 0.3s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+html.paper-reveal-js .paper-reveal-right.is-revealed::before,
+html.paper-reveal-js .paper-reveal-right.is-revealed::after {
+	opacity: 1;
+	transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.paper-reveal-js .paper-reveal-right::before,
+	html.paper-reveal-js .paper-reveal-right::after,
+	html.paper-reveal-js .paper-reveal-right.is-revealed::before,
+	html.paper-reveal-js .paper-reveal-right.is-revealed::after {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}
