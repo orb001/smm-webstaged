@@ -1,28 +1,25 @@
-/* Scroll-triggered 3D "domino/flap" reveal. Add the `flip-card-reveal`
-   class to any Divi Row (Advanced tab -> CSS ID & Classes) to enable.
-   Pairs with card-reveal.js, which toggles `is-revealed` via
-   IntersectionObserver and adds `flip-card-reveal-js` to <html> once
-   running -- rows render normally if JS is disabled or fails. */
+/* Scroll-scrubbed "grow into place" card reveal, modeled on the My
+   Projects cards at https://clean.framer.website/ -- each card starts
+   small, tilted back and shifted down, then scales up, flattens and
+   rises into position, spring-smoothed to trail the scroll position
+   rather than a fixed-duration transition. Add the `flip-card-reveal`
+   class to any Divi Row or Module (Advanced tab -> CSS ID & Classes) to
+   enable. Pairs with card-reveal.js, which eases the `--reveal` custom
+   property (0 to 1) toward the scroll-derived target every frame and
+   adds `flip-card-reveal-js` to <html> once running -- rows render
+   normally if JS is disabled or fails. */
 
 html.flip-card-reveal-js .flip-card-reveal {
-	opacity: 0;
-	transform: perspective(1500px) rotateX(78deg);
-	transform-origin: center bottom;
-	transition: transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
-		opacity 0.5s ease-out;
-	will-change: transform, opacity;
-}
-
-html.flip-card-reveal-js .flip-card-reveal.is-revealed {
-	opacity: 1;
-	transform: perspective(1500px) rotateX(0deg);
+	--reveal: 0;
+	transform: perspective(1200px)
+		translateY(calc(60px * (1 - var(--reveal))))
+		scale(calc(0.8 + (0.2 * var(--reveal))))
+		rotateX(calc(25deg * (1 - var(--reveal))));
+	will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	html.flip-card-reveal-js .flip-card-reveal,
-	html.flip-card-reveal-js .flip-card-reveal.is-revealed {
-		opacity: 1;
+	html.flip-card-reveal-js .flip-card-reveal {
 		transform: none;
-		transition: none;
 	}
 }
